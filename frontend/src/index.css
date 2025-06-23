@@ -40,9 +40,9 @@ body {
   padding: 40px 20px;
 }
 
-.chart img {
+.chart{
   width: 100%;
-  max-width: 400px;
+  max-width: 600px;
 }
 
 .team {
@@ -82,32 +82,69 @@ body {
 }
 
 .banner-container {
-  width: 100%;
   overflow: hidden;
+  white-space: nowrap;
   background-color: #f5f5f5;
-  border-top: 1px solid #ddd;
+  padding: 8px 0;
   border-bottom: 1px solid #ddd;
+  position: relative;
 }
 
 .banner-content {
-  display: flex;
-  gap: 2rem;
-  padding: 0.5rem 0;
-  white-space: nowrap;
-  animation: scroll 40s linear infinite;
+  display: inline-block;
+  padding-left: 100%;
+  animation: scrollBanner 40s linear infinite;
+  font-size: 0.95rem;
+  color: #333;
 }
 
 .banner-item {
   display: inline-block;
-  font-size: 0.95rem;
-  color: #1e3a8a;
+  margin-right: 40px;
+  font-weight: 500;
 }
 
-@keyframes scroll {
-  from {
-    transform: translateX(100%);
+.banner-date {
+  text-align: center;
+  font-size: 0.8rem;
+  color: #666;
+  margin-top: 4px;
+  font-style: italic;
+}
+
+.banner-container:hover .banner-content {
+  animation-play-state: paused;
+  cursor: pointer;
+}
+
+.grafico-container {
+  background: #ffffff;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin-top: 2rem;
+}
+
+.selectores {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.selectores select {
+  padding: 0.4rem 0.75rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 0.9rem;
+}
+
+
+@keyframes scrollBanner {
+  0% {
+    transform: translateX(0%);
   }
-  to {
+  100% {
     transform: translateX(-100%);
   }
 }

@@ -1,6 +1,7 @@
 import Noticias from './components/noticias';
 import './index.css';
 import BannerIndicadores from './components/bannerindicadores';
+import GraficoHistorial from './components/graficohistorial';
 
 function App() {
 
@@ -50,8 +51,7 @@ function App() {
         </div>
 
         <div className="chart">
-          <h3>Valores Históricos</h3>
-          <img src="grafico.png" alt="Gráfico" />
+          <GraficoHistorial />
         </div>
       </section>
 

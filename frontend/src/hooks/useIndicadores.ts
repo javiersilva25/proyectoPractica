@@ -13,6 +13,7 @@ interface Indicadores {
 
 export const useIndicadores = () => {
   const [datos, setDatos] = useState<Indicadores>({});
+  const [fecha, setFecha] = useState<string | null>(null);
 
   useEffect(() => {
     axios.get('https://mindicador.cl/api')
@@ -20,11 +21,11 @@ export const useIndicadores = () => {
         const copia = { ...res.data };
         delete copia.version;
         delete copia.autor;
-        delete copia.fecha;
+        setFecha(res.data.fecha);
         setDatos(copia);
       })
       .catch(err => console.error("Error al obtener indicadores", err));
   }, []);
 
-  return datos;
+  return { datos, fecha };
 };
