@@ -1,35 +1,85 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import Noticias from './components/noticias';
+import './index.css';
+import BannerIndicadores from './components/bannerindicadores';
 
 function App() {
-  const [count, setCount] = useState(0)
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <div>
+      <header className="top-bar">
+      <div className="logo">Logo</div>
+      <div className="buttons">
+        <a href="#">Acceder</a>
+        <button>Suscribirse</button>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
+      </header>
+
+      <BannerIndicadores />
+      
+
+      <section className="hero">
+        <div className="hero-text">
+          <h1>Tu tranquilidad financiera comienza aquí</h1>
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+          <button>Conócenos</button>
+        </div>
+      </section>
+
+      <section className="services">
+        <div className="service-card">
+          <h3>Servicio</h3>
+          <p>Descripción breve del servicio ofrecido.</p>
+          <button>Solicitar</button>
+        </div>
+        <div className="service-card">
+          <h3>Servicio</h3>
+          <p>Descripción breve del servicio ofrecido.</p>
+          <button>Solicitar</button>
+        </div>
+        <div className="service-card">
+          <h3>Servicio</h3>
+          <p>Descripción breve del servicio ofrecido.</p>
+          <button>Solicitar</button>
+        </div>
+      </section>
+
+      <section className="news-chart">
+        <div className="news">
+          <h3>Últimas noticias</h3>
+          <Noticias />
+        </div>
+
+        <div className="chart">
+          <h3>Valores Históricos</h3>
+          <img src="grafico.png" alt="Gráfico" />
+        </div>
+      </section>
+
+      <section className="team">
+        <h3>Nuestro equipo</h3>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+        <img src="persona.jpg" alt="Persona" />
+        <button>Contáctanos</button>
+      </section>
+
+      <section className="contact-form">
+        <h3>Contáctanos</h3>
+        <p>¿Tienes alguna duda o comentario? Escríbenos.</p>
+        <form>
+          <input type="text" placeholder="Nombre Completo" required />
+          <input type="email" placeholder="Email" required />
+          <textarea placeholder="Mensaje" required></textarea>
+          <button type="submit">Enviar</button>
+        </form>
+      </section>
+
+      <footer className="footer">
         <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
+          © 2025 Nombre Empresa | email@empresa.cl | +56 234585576 | Dirección oficina 123, San Fernando
         </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+      </footer>
+    </div>
+  );
 }
 
-export default App
+export default App;
