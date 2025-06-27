@@ -1,7 +1,7 @@
-import Noticias from './components/noticias';
 import './index.css';
 import BannerIndicadores from './components/bannerindicadores';
 import GraficoHistorial from './components/graficohistorial';
+import NoticiasFiltradas from './components/NoticiasFIltradas';
 
 function App() {
 
@@ -47,7 +47,7 @@ function App() {
       <section className="news-chart">
         <div className="news">
           <h3>Últimas noticias</h3>
-          <Noticias />
+          <NoticiasFiltradas />
         </div>
 
         <div className="chart">
