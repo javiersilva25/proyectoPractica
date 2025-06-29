@@ -7,7 +7,6 @@ const BannerIndicadores = () => {
     uf: 'UF',
     utm: 'UTM',
     dolar: 'Dólar',
-    dolar_intercambio: 'Dólar Acuerdo',
     euro: 'Euro',
     yen: 'Yen',
     ipc: 'IPC',
@@ -16,9 +15,7 @@ const BannerIndicadores = () => {
     tpm: 'TPM',
     libra_cobre: 'Cobre',
     tasa_desempleo: 'Desempleo',
-    bitcoin: 'Bitcoin',
     indice_remuneraciones: 'Remuneraciones',
-    tasa_interes_corriente: 'Interés Corriente',
   };
 
   return (
@@ -26,15 +23,15 @@ const BannerIndicadores = () => {
       <div className="banner-container">
         <div className="banner-content">
           {Object.entries(nombres).map(([clave, nombre]) => {
-            const valor = indicadores[clave]?.valor;
-            if (!valor) return null;
+            const indicador = indicadores[clave];
+            if (!indicador) return null;
 
             return (
               <span className="banner-item" key={clave}>
-                {nombre}: {valor.toLocaleString('es-CL', {
+                {nombre}: {indicador.valor.toLocaleString('es-CL', {
                   style: 'decimal',
                   maximumFractionDigits: 2,
-                })}
+                })} {indicador.unidad_medida}
               </span>
             );
           })}

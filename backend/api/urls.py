@@ -1,6 +1,7 @@
 from django.urls import path
-from .views import NoticiaListView
+from api.views import NoticiaListView, indicadores_banco_central
 
 urlpatterns = [
-    path('noticias/', NoticiaListView.as_view(), name='lista-noticias'),
+    path("noticias/", NoticiaListView.as_view()),
+    path("indicadores/", indicadores_banco_central),
 ]

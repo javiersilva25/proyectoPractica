@@ -1,3 +1,4 @@
+// src/hooks/useIndicadores.ts
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 
@@ -16,12 +17,11 @@ export const useIndicadores = () => {
   const [fecha, setFecha] = useState<string | null>(null);
 
   useEffect(() => {
-    axios.get('https://mindicador.cl/api')
+    axios.get('http://localhost:8000/api/indicadores')
       .then(res => {
         const copia = { ...res.data };
-        delete copia.version;
-        delete copia.autor;
         setFecha(res.data.fecha);
+        delete copia.fecha;
         setDatos(copia);
       })
       .catch(err => console.error("Error al obtener indicadores", err));

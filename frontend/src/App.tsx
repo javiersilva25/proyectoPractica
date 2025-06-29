@@ -56,7 +56,7 @@ function App() {
       </section>
 
       <section className="team">
-        <h3>Nuestro equipo</h3>
+        <h3>Acerca de</h3>
         <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
         <img src="persona.jpg" alt="Persona" />
         <button>Contáctanos</button>
