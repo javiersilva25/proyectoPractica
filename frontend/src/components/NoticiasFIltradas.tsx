@@ -5,6 +5,8 @@ const categorias = {
   politica: 'Política',
   internacional: 'Internacional',
   economica: 'Económica',
+  tributaria: 'Tributaria',
+  laboral: 'Laboral',
 };
 
 const NoticiasFiltradas = () => {

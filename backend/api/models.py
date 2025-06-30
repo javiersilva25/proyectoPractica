@@ -15,6 +15,7 @@ class Noticia(models.Model):
         ('empresas', 'Empresas'),
         ('mercados', 'Mercados'),
         ('otros', 'Otros'),
+        ('laboral', 'Laboral'),
     ]
 
     titulo = models.CharField(max_length=255)
