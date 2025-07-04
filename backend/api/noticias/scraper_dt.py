@@ -96,3 +96,6 @@ def scrape_dt():
             noticias_insertadas += 1
 
     print(f"\n✅ Se insertaron {noticias_insertadas} noticias desde dt.gob.cl")
+
+if __name__ == "__main__":
+    scrape_dt()
