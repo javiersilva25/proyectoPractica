@@ -1,3 +1,4 @@
+# backend/backend/settings.py
 """
 Django settings for backend project.
 
@@ -40,6 +41,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     'api',
+    'acciones',
     'django_filters'
 ]
 
@@ -132,6 +134,5 @@ CORS_ALLOWED_ORIGINS = [
     'http://localhost:5173',  # Incluye este si usas Vite
 ]
 
-REST_FRAMEWORK = {
-    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
-}
+# ← AGREGAR ESTAS LÍNEAS PARA MEJOR CONFIGURACIÓN CORS
+CORS_ALLOW_CREDENTIALS = True
