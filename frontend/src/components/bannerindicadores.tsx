@@ -20,27 +20,32 @@ const BannerIndicadores = () => {
 
   return (
     <>
-      <div className="banner-container">
-        <div className="banner-content">
+      {/* Banner de indicadores con animación */}
+      <div className="overflow-hidden whitespace-nowrap bg-blue-100 py-2 border-b border-gray-300 relative">
+        <div className="inline-block pl-full animate-marquee text-sm text-gray-800 font-medium">
           {Object.entries(nombres).map(([clave, nombre]) => {
             const indicador = indicadores[clave];
             if (!indicador) return null;
 
             return (
-              <span className="banner-item" key={clave}>
-                {nombre}: {indicador.valor.toLocaleString('es-CL', {
+              <span key={clave} className="inline-block mr-10">
+                {nombre}:{' '}
+                {indicador.valor.toLocaleString('es-CL', {
                   style: 'decimal',
                   maximumFractionDigits: 2,
-                })} {indicador.unidad_medida}
+                })}{' '}
+                {indicador.unidad_medida}
               </span>
             );
           })}
         </div>
       </div>
 
+      {/* Fecha de actualización */}
       {fecha && (
-        <div className="banner-date">
-          Datos actualizados al {new Date(fecha).toLocaleDateString('es-CL')}
+        <div className="text-center text-xs italic text-gray-600 mt-1">
+          Datos actualizados al{' '}
+          {new Date(fecha).toLocaleDateString('es-CL')}
         </div>
       )}
     </>
