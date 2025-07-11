@@ -136,3 +136,9 @@ CORS_ALLOWED_ORIGINS = [
 
 # ← AGREGAR ESTAS LÍNEAS PARA MEJOR CONFIGURACIÓN CORS
 CORS_ALLOW_CREDENTIALS = True
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+}
