@@ -1,8 +1,9 @@
-// src/pages/Register.tsx
-
 import { useState } from 'react'
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
+import Navbar from '../components/Navbar'
+import Footer from '../components/Footer'
+import BannerIndicadores from './bannerindicadores'
 
 export default function Register() {
   const navigate = useNavigate()
@@ -28,13 +29,17 @@ export default function Register() {
     }
 
     try {
-      await axios.post('http://localhost:8000/api/registro/', {
-        username: form.username,
-        email: form.email,
-        password: form.password,
-      }, {
-        headers: { 'Content-Type': 'application/json' },
-      })
+      await axios.post(
+        'http://localhost:8000/api/registro/',
+        {
+          username: form.username,
+          email: form.email,
+          password: form.password,
+        },
+        {
+          headers: { 'Content-Type': 'application/json' },
+        }
+      )
 
       alert('✅ Registro exitoso. Ahora puedes iniciar sesión.')
       navigate('/login', { state: { registrado: true } })
@@ -44,59 +49,66 @@ export default function Register() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white p-8 rounded shadow-md w-full max-w-md space-y-4"
-      >
-        <h2 className="text-2xl font-bold text-center">Crear cuenta</h2>
+    <div className="flex flex-col min-h-screen">
+      <Navbar />
+      <BannerIndicadores />
 
-        <input
-          type="text"
-          name="username"
-          placeholder="Nombre de usuario"
-          value={form.username}
-          onChange={handleChange}
-          required
-          className="w-full p-2 border rounded"
-        />
-        <input
-          type="email"
-          name="email"
-          placeholder="Correo electrónico"
-          value={form.email}
-          onChange={handleChange}
-          required
-          className="w-full p-2 border rounded"
-        />
-        <input
-          type="password"
-          name="password"
-          placeholder="Contraseña"
-          value={form.password}
-          onChange={handleChange}
-          required
-          className="w-full p-2 border rounded"
-        />
-        <input
-          type="password"
-          name="confirmPassword"
-          placeholder="Confirmar contraseña"
-          value={form.confirmPassword}
-          onChange={handleChange}
-          required
-          className="w-full p-2 border rounded"
-        />
-
-        {error && <p className="text-red-500 text-sm">{error}</p>}
-
-        <button
-          type="submit"
-          className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600"
+      <main className="flex-grow flex items-center justify-center bg-gray-100 px-4">
+        <form
+          onSubmit={handleSubmit}
+          className="bg-white p-8 rounded shadow-md w-full max-w-md space-y-4"
         >
-          Registrarse
-        </button>
-      </form>
+          <h2 className="text-2xl font-bold text-center">Crear cuenta</h2>
+
+          <input
+            type="text"
+            name="username"
+            placeholder="Nombre de usuario"
+            value={form.username}
+            onChange={handleChange}
+            required
+            className="w-full p-2 border rounded"
+          />
+          <input
+            type="email"
+            name="email"
+            placeholder="Correo electrónico"
+            value={form.email}
+            onChange={handleChange}
+            required
+            className="w-full p-2 border rounded"
+          />
+          <input
+            type="password"
+            name="password"
+            placeholder="Contraseña"
+            value={form.password}
+            onChange={handleChange}
+            required
+            className="w-full p-2 border rounded"
+          />
+          <input
+            type="password"
+            name="confirmPassword"
+            placeholder="Confirmar contraseña"
+            value={form.confirmPassword}
+            onChange={handleChange}
+            required
+            className="w-full p-2 border rounded"
+          />
+
+          {error && <p className="text-red-500 text-sm">{error}</p>}
+
+          <button
+            type="submit"
+            className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600"
+          >
+            Registrarse
+          </button>
+        </form>
+      </main>
+
+      <Footer />
     </div>
   )
 }

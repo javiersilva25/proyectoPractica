@@ -45,9 +45,6 @@ export default function HomePage() {
           <div key={i} className="bg-blue-100 p-6 rounded-xl w-full md:w-1/4">
             <h3 className="text-lg font-semibold mb-2">Servicio</h3>
             <p className="mb-4">Descripción breve del servicio ofrecido.</p>
-            <button className="bg-blue-400 text-black px-4 py-2 rounded-md hover:bg-blue-600 transition">
-              Solicitar
-            </button>
           </div>
         ))}
       </section>

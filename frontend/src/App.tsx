@@ -4,6 +4,9 @@ import Login from './components/Login'
 import Dashboard from './pages/Dashboard'
 import RutaPrivada from './components/RutaPrivada'
 import Registro from './components/Register'
+import DocumentosCliente from './components/DocumentoCliente'
+import { Toaster } from 'react-hot-toast'
+
 
 export default function App() {
   return (
@@ -20,7 +23,16 @@ export default function App() {
             </RutaPrivada>
           }
         />
+        <Route
+          path="/cliente/documentos"
+          element={
+            <RutaPrivada>
+              <DocumentosCliente />
+            </RutaPrivada>
+          }
+        />
       </Routes>
+      <Toaster position="top-right" reverseOrder={false} />
     </Router>
   )
 }
