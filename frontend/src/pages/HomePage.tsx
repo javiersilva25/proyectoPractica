@@ -40,14 +40,46 @@ export default function HomePage() {
       </section>
 
       {/* Servicios */}
-      <section className="bg-white px-5 py-10 flex flex-col md:flex-row justify-around gap-6 text-center">
-        {[1, 2, 3].map((_, i) => (
-          <div key={i} className="bg-blue-100 p-6 rounded-xl w-full md:w-1/4">
-            <h3 className="text-lg font-semibold mb-2">Servicio</h3>
-            <p className="mb-4">Descripción breve del servicio ofrecido.</p>
+        <section className="bg-white px-5 py-10 flex flex-col md:flex-row justify-around gap-6 text-center">
+          <div className="bg-blue-100 p-6 rounded-xl w-full md:w-1/4">
+            <img
+              src="https://gaux.eu/wp-content/uploads/2024/10/persoenliche-beratung-fuer-ihre-baeckerei.jpg"
+              alt="Asesoramiento Personalizado"
+              className="w-full h-40 object-cover rounded-lg mb-4"
+            />
+            <h3 className="text-lg font-semibold mb-2">Asesoramiento Personalizado</h3>
+            <p className="mb-4">
+              Ofrecemos soluciones personalizadas que se adaptan a las particularidades de su negocio.
+            </p>
           </div>
-        ))}
-      </section>
+          <div className="bg-blue-100 p-6 rounded-xl w-full md:w-1/4">
+            <img
+              src="https://www.floresattorneys.com/wp-content/uploads/2020/07/thumb-tax-litigation_support.jpg"
+              alt="Cumplimiento Normativo"
+              className="w-full h-40 object-cover rounded-lg mb-4"
+            />
+            <h3 className="text-lg font-semibold mb-2">Cumplimiento Normativo</h3>
+            <p className="mb-4">
+              Nos destacamos por nuestro conocimiento actualizado de las normativas fiscales y contables. 
+              Gracias a esto, hemos podido asesorar a muchos clientes en el cumplimiento de sus obligaciones legales, 
+              evitando sanciones y optimizando su carga tributaria.
+            </p>
+          </div>
+          <div className="bg-blue-100 p-6 rounded-xl w-full md:w-1/4">
+            <img
+              src="https://5092991.fs1.hubspotusercontent-na1.net/hubfs/5092991/Blog%20notas%20maestrias%20y%20diplomados/Innovaci%C3%B3n%20tecnol%C3%B3gica.jpg"
+              alt="Innovación y Tecnología"
+              className="w-full h-40 object-cover rounded-lg mb-4"
+            />
+            <h3 className="text-lg font-semibold mb-2">Innovación y Tecnología</h3>
+            <p className="mb-4">
+              Nuestra empresa utiliza herramientas tecnológicas avanzadas que facilitan la gestión contable y financiera. 
+              Esto no solo mejora la eficiencia, sino que también proporciona a nuestros clientes información oportuna para 
+              la toma de decisiones estratégicas.
+            </p>
+          </div>
+        </section>
+
 
       {/* Noticias y Gráficos */}
       <section className="grid md:grid-cols-3 gap-5 px-4 py-8">

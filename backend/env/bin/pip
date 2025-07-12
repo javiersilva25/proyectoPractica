@@ -1,4 +1,4 @@
-#!/home/javi/Documentos/GitHub/proyectoPractica/backend/env/bin/python
+#!/home/javi/GitHub/proyectoPractica/backend/env/bin/python
 # -*- coding: utf-8 -*-
 import re
 import sys
