@@ -19,6 +19,7 @@ router.register(r'mensajes', MensajeClienteViewSet, basename='mensajes')
 urlpatterns = [
     path('noticias/', NoticiaListView.as_view(), name='noticias-list'),
     path('indicadores/', indicadores_banco_central, name='indicadores'),
+    path('acciones/', include('api.acciones.urls')),
 
     # JWT
     path('login/', TokenObtainPairView.as_view(), name='token_obtain_pair'),

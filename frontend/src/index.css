@@ -6,8 +6,33 @@
   }
 
   @keyframes marquee {
-    0% { transform: translateX(100%); } /* ← cambio importante */
+    0% { transform: translateX(180%); }
     100% { transform: translateX(-100%); }
+  }
+
+  @keyframes marquee-seamless {
+    0% { transform: translateX(100%); }
+    100% { transform: translateX(-50%); }
+  }
+
+  @keyframes slide-in {
+    0% {
+      opacity: 0;
+      transform: translateX(30px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes float {
+    0%, 100% {
+      transform: translateY(0) rotate(0deg);
+    }
+    50% {
+      transform: translateY(-20px) rotate(180deg);
+    }
   }
 
   .animate-spin-custom {
@@ -15,6 +40,22 @@
   }
 
   .animate-marquee {
-    animation: marquee 40s linear infinite;
+    animation: marquee 60s linear infinite;
+  }
+
+  .animate-marquee-seamless {
+    animation: marquee-seamless 60s linear infinite;
+  }
+
+  .animate-slide-in {
+    animation: slide-in 0.5s ease-out;
+  }
+
+  .animate-logo-spin {
+    animation: spin infinite 20s linear;
+  }
+
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
   }
 }
