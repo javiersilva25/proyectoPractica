@@ -2,9 +2,10 @@
 import requests
 import time
 import os
+import threading
 from typing import List, Dict, Any
 from django.core.cache import cache
-import threading
+from datetime import datetime, timedelta
 import logging
 
 logger = logging.getLogger(__name__)
@@ -14,9 +15,72 @@ class AccionesService:
         self.API_KEY = os.getenv("ALPHA_VANTAGE_API_KEY", "2RCP7B03LNGI0QWCN")
         self.url = "https://www.alphavantage.co/query"
         self.simbolos = ["AAPL", "GOOGL", "MSFT", "TSLA", "AMZN"]
-        self.cache_timeout = 300  # 5 minutos
+        self.cache_timeout = 900  # 15 minutos
+        self.update_interval = 900  # 15 minutos en segundos
+        self.is_updating = False
+        self.last_update = None
         
-        print(f"🔑 Alpha Vantage API Key: {self.API_KEY} - SOLO DATOS REALES")
+        print(f"🔑 Alpha Vantage API Key: {self.API_KEY} - CONSULTAS CADA 15 MINUTOS")
+        self._start_auto_update()
+    
+    def _start_auto_update(self):
+        """Inicia el hilo de consultas automáticas cada 15 minutos"""
+        def update_loop():
+            # Esperar 5 minutos antes de la primera consulta (para no chocar con Yahoo)
+            time.sleep(300)
+            
+            while True:
+                try:
+                    current_time = datetime.now().strftime('%H:%M:%S')
+                    print(f"🕐 {current_time} - Iniciando consulta Alpha Vantage cada 15 min...")
+                    self._update_all_cached_data()
+                    self.last_update = datetime.now()
+                    update_time = self.last_update.strftime('%H:%M:%S')
+                    print(f"✅ Consulta Alpha Vantage completada a las {update_time}")
+                except Exception as e:
+                    print(f"❌ Error en consulta automática Alpha Vantage: {e}")
+                
+                # Esperar exactamente 15 minutos
+                print(f"⏳ Próxima consulta Alpha Vantage en 15 minutos...")
+                time.sleep(self.update_interval)
+        
+        update_thread = threading.Thread(target=update_loop, daemon=True)
+        update_thread.start()
+        print("🚀 Hilo de consultas Alpha Vantage cada 15 minutos iniciado")
+    
+    def _update_all_cached_data(self):
+        """Consulta Alpha Vantage y actualiza los datos en caché"""
+        if self.is_updating:
+            print("⚠️ Consulta Alpha Vantage ya en progreso, saltando...")
+            return
+        
+        self.is_updating = True
+        print(f"🔄 Consultando Alpha Vantage para {len(self.simbolos)} acciones...")
+        
+        try:
+            exitosas = 0
+            for i, simbolo in enumerate(self.simbolos):
+                if i > 0:
+                    # Alpha Vantage permite 5 calls por minuto, esperamos 15 segundos
+                    tiempo_espera = 300
+                    print(f"⏳ Esperando {tiempo_espera}s antes de consultar {simbolo} (Alpha Vantage)...")
+                    time.sleep(tiempo_espera)
+                
+                print(f"🔄 Consultando {simbolo} en Alpha Vantage...")
+                resultado = self.obtener_cotizacion(simbolo)
+                
+                if resultado.get("success"):
+                    exitosas += 1
+                    precio = resultado.get("precio", 0)
+                    cambio = resultado.get("cambio", 0)
+                    print(f"✅ {simbolo}: ${precio:.2f} ({cambio:+.2f}) [Alpha Vantage]")
+                else:
+                    print(f"❌ Error consultando {simbolo}: {resultado.get('error', 'Unknown')}")
+            
+            print(f"📊 Consulta Alpha Vantage completada: {exitosas}/{len(self.simbolos)} acciones actualizadas")
+                    
+        finally:
+            self.is_updating = False
     
     def obtener_cotizacion(self, simbolo: str) -> Dict[str, Any]:
         """Obtiene la cotización REAL de un símbolo específico"""
@@ -26,8 +90,10 @@ class AccionesService:
         try:
             cached_data = cache.get(cache_key)
             if cached_data and cached_data.get("success"):
-                print(f"✅ Cache hit para {simbolo}")
-                return cached_data
+                timestamp = cached_data.get("timestamp", 0)
+                if time.time() - timestamp < self.cache_timeout:
+                    age_minutes = int((time.time() - timestamp) / 60)
+                    return cached_data
         except Exception as e:
             print(f"⚠️ Error accediendo al cache para {simbolo}: {e}")
         
@@ -38,22 +104,14 @@ class AccionesService:
             "apikey": self.API_KEY
         }
         
-        url_completa = f"{self.url}?function=GLOBAL_QUOTE&symbol={simbolo}&apikey={self.API_KEY}"
-        print(f"🌐 Llamando Alpha Vantage REAL para {simbolo}")
-        
         try:
             response = requests.get(self.url, params=params, timeout=15)
             response.raise_for_status()
             data = response.json()
             
-            print(f"📡 Respuesta Alpha Vantage para {simbolo}:")
-            print(f"   Status Code: {response.status_code}")
-            print(f"   Keys en respuesta: {list(data.keys()) if isinstance(data, dict) else 'No es dict'}")
-            
             # Verificar errores de API
             if "Note" in data:
                 error_msg = f"Rate limit excedido: {data['Note']}"
-                print(f"❌ {error_msg}")
                 return {
                     "simbolo": simbolo,
                     "error": error_msg,
@@ -63,17 +121,6 @@ class AccionesService:
             
             if "Error Message" in data:
                 error_msg = f"Error de API: {data['Error Message']}"
-                print(f"❌ {error_msg}")
-                return {
-                    "simbolo": simbolo,
-                    "error": error_msg,
-                    "success": False,
-                    "timestamp": int(time.time())
-                }
-            
-            if "Information" in data:
-                error_msg = f"Información de API: {data['Information']}"
-                print(f"❌ {error_msg}")
                 return {
                     "simbolo": simbolo,
                     "error": error_msg,
@@ -84,7 +131,6 @@ class AccionesService:
             # Verificar si tenemos Global Quote REAL
             if "Global Quote" in data and data["Global Quote"]:
                 quote = data["Global Quote"]
-                print(f"✅ Global Quote REAL encontrado para {simbolo}")
                 
                 try:
                     precio = float(quote.get("05. price", 0))
@@ -103,13 +149,12 @@ class AccionesService:
                         "timestamp": int(time.time()),
                         "volumen": quote.get("06. volume", "N/A"),
                         "ultimo_dia_trading": quote.get("07. latest trading day", "N/A"),
-                        "fuente": "alpha_vantage_real"
+                        "fuente": "Alpha Vantage"
                     }
                     
                     # Guardar en cache
                     try:
                         cache.set(cache_key, resultado, self.cache_timeout)
-                        print(f"💾 Datos REALES de {simbolo} guardados en cache: ${precio:.2f}")
                     except Exception as e:
                         print(f"⚠️ Error guardando en cache para {simbolo}: {e}")
                     
@@ -117,7 +162,6 @@ class AccionesService:
                     
                 except (ValueError, TypeError) as e:
                     error_msg = f"Error procesando datos REALES para {simbolo}: {e}"
-                    print(f"❌ {error_msg}")
                     return {
                         "simbolo": simbolo,
                         "error": error_msg,
@@ -127,7 +171,6 @@ class AccionesService:
             
             # Si llegamos aquí, no hay Global Quote válido
             error_msg = f"No se encontraron datos reales válidos para {simbolo}"
-            print(f"❌ {error_msg}")
             return {
                 "simbolo": simbolo,
                 "error": error_msg,
@@ -137,7 +180,6 @@ class AccionesService:
                 
         except requests.exceptions.Timeout:
             error_msg = f"Timeout obteniendo datos REALES para {simbolo}"
-            print(f"❌ {error_msg}")
             return {
                 "simbolo": simbolo,
                 "error": error_msg,
@@ -146,7 +188,6 @@ class AccionesService:
             }
         except requests.exceptions.RequestException as e:
             error_msg = f"Error de conexión para {simbolo}: {str(e)}"
-            print(f"❌ {error_msg}")
             return {
                 "simbolo": simbolo,
                 "error": error_msg,
@@ -155,7 +196,6 @@ class AccionesService:
             }
         except Exception as e:
             error_msg = f"Error inesperado para {simbolo}: {str(e)}"
-            print(f"❌ {error_msg}")
             return {
                 "simbolo": simbolo,
                 "error": error_msg,
@@ -169,16 +209,11 @@ class AccionesService:
             simbolos = self.simbolos
         
         simbolos = [s.upper().strip() for s in simbolos[:5]]
-        print(f"🎯 Obteniendo acciones REALES de Alpha Vantage: {simbolos}")
         
         resultados = []
         
-        # Intentar obtener cada símbolo con pausa entre llamadas
-        for i, simbolo in enumerate(simbolos):
-            if i > 0:
-                print(f"⏳ Esperando 12 segundos antes de llamar API para {simbolo}...")
-                time.sleep(12)  # Respetar rate limits
-            
+        # Obtener cada símbolo (ya con cache integrado)
+        for simbolo in simbolos:
             resultado = self.obtener_cotizacion(simbolo)
             resultados.append(resultado)
         
@@ -186,7 +221,10 @@ class AccionesService:
         exitosas = [r for r in resultados if r.get("success")]
         fallidas = [r for r in resultados if not r.get("success")]
         
-        print(f"📊 Alpha Vantage REAL: {len(exitosas)} exitosas, {len(fallidas)} fallidas")
+        proxima_actualizacion = "N/A"
+        if self.last_update:
+            proxima = self.last_update + timedelta(minutes=15)
+            proxima_actualizacion = proxima.strftime('%H:%M:%S')
         
         return {
             "acciones": resultados,
@@ -194,7 +232,10 @@ class AccionesService:
             "exitosas": len(exitosas),
             "fallidas": len(fallidas),
             "simbolos_solicitados": simbolos,
-            "fuente": "alpha_vantage_real"
+            "fuente": "Alpha Vantage",
+            "ultima_actualizacion_automatica": self.last_update.strftime('%H:%M:%S') if self.last_update else "Pendiente",
+            "proxima_actualizacion": proxima_actualizacion,
+            "intervalo_consultas": "15 minutos"
         }
 
 # Instancia del servicio

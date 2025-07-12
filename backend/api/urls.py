@@ -1,11 +1,6 @@
 from django.urls import path, include
 from .views import indicadores_banco_central
-
-# Importar vistas de módulos internos
-try:
-    from .views.noticias import NoticiaListView
-except ImportError:
-    from .noticias.views import NoticiaListView
+from .views.noticias import NoticiaListView
 
 app_name = 'api'
 
