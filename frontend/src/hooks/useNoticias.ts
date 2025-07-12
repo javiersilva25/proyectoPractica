@@ -11,6 +11,8 @@ export interface Noticia {
   fecha_scraping: string;
 }
 
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+
 export const useNoticias = (categoria: string) => {
   const [noticias, setNoticias] = useState<Noticia[]>([]);
   const [loading, setLoading] = useState(true);
@@ -21,10 +23,16 @@ export const useNoticias = (categoria: string) => {
     setError(null);
 
     axios
-      .get(`http://localhost:8000/api/noticias/?categoria=${categoria}`)
+      .get(`${API_BASE_URL}/api/noticias/`, {
+        params: { categoria },
+        timeout: 10000,
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      })
       .then((res) => {
         console.log("🟢 Noticias recibidas:", res.data.results);
-        setNoticias(res.data.results);
+        setNoticias(res.data.results || []);
       })
       .catch((err) => {
         console.error("❌ Error al obtener noticias", err);
