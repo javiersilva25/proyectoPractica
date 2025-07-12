@@ -1,3 +1,4 @@
+# backend/backend/settings.py
 import os
 from pathlib import Path
 
@@ -8,9 +9,16 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-tu-clave-secreta-aqui'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = True  # ✅ Cambiar a True para desarrollo
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '0.0.0.0']
+# ✅ Configurar ALLOWED_HOSTS correctamente
+ALLOWED_HOSTS = [
+    'localhost', 
+    '127.0.0.1', 
+    '0.0.0.0',
+    '.vercel.app',  # Si planeas usar Vercel
+    '.herokuapp.com',  # Si planeas usar Heroku
+]
 
 # Application definition
 INSTALLED_APPS = [
@@ -94,16 +102,20 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# CORS settings
+# ✅ CORS settings mejoradas
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",  # Vite dev server
     "http://127.0.0.1:5173",
     "http://localhost:3000",  # React dev server alternativo
     "http://127.0.0.1:3000",
+    "http://localhost:8080",
+    "http://127.0.0.1:8080",
 ]
 
+# ✅ Para desarrollo, puedes usar esto temporalmente:
+# CORS_ALLOW_ALL_ORIGINS = True  # Solo para desarrollo
+
 CORS_ALLOW_CREDENTIALS = True
-CORS_ALLOW_ALL_ORIGINS = False
 
 # Headers permitidos
 CORS_ALLOW_HEADERS = [
@@ -118,7 +130,7 @@ CORS_ALLOW_HEADERS = [
     'x-requested-with',
 ]
 
-# Cache configuration
+# ✅ Cache configuration
 CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',

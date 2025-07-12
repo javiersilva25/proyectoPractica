@@ -1,4 +1,4 @@
-# acciones.py
+# acciones.py - SOLO DATOS REALES DE ALPHA VANTAGE
 import requests
 import time
 import os
@@ -16,11 +16,11 @@ class AccionesService:
         self.simbolos = ["AAPL", "GOOGL", "MSFT", "TSLA", "AMZN"]
         self.cache_timeout = 300  # 5 minutos
         
-        print(f"🔑 Alpha Vantage API Key: {self.API_KEY}")
+        print(f"🔑 Alpha Vantage API Key: {self.API_KEY} - SOLO DATOS REALES")
     
     def obtener_cotizacion(self, simbolo: str) -> Dict[str, Any]:
-        """Obtiene la cotización de un símbolo específico"""
-        cache_key = f"accion_{simbolo}"
+        """Obtiene la cotización REAL de un símbolo específico"""
+        cache_key = f"alpha_accion_{simbolo}"
         
         # Verificar cache primero
         try:
@@ -31,7 +31,7 @@ class AccionesService:
         except Exception as e:
             print(f"⚠️ Error accediendo al cache para {simbolo}: {e}")
         
-        # Obtener datos de la API
+        # Obtener datos REALES de la API
         params = {
             "function": "GLOBAL_QUOTE",
             "symbol": simbolo,
@@ -39,19 +39,18 @@ class AccionesService:
         }
         
         url_completa = f"{self.url}?function=GLOBAL_QUOTE&symbol={simbolo}&apikey={self.API_KEY}"
-        print(f"🌐 Llamando API para {simbolo}: {url_completa}")
+        print(f"🌐 Llamando Alpha Vantage REAL para {simbolo}")
         
         try:
             response = requests.get(self.url, params=params, timeout=15)
             response.raise_for_status()
             data = response.json()
             
-            print(f"📡 Respuesta API para {simbolo}:")
+            print(f"📡 Respuesta Alpha Vantage para {simbolo}:")
             print(f"   Status Code: {response.status_code}")
             print(f"   Keys en respuesta: {list(data.keys()) if isinstance(data, dict) else 'No es dict'}")
-            print(f"   Respuesta completa: {data}")
             
-            # Verificar diferentes tipos de respuesta de error
+            # Verificar errores de API
             if "Note" in data:
                 error_msg = f"Rate limit excedido: {data['Note']}"
                 print(f"❌ {error_msg}")
@@ -82,16 +81,18 @@ class AccionesService:
                     "timestamp": int(time.time())
                 }
             
-            # Verificar si tenemos Global Quote
+            # Verificar si tenemos Global Quote REAL
             if "Global Quote" in data and data["Global Quote"]:
                 quote = data["Global Quote"]
-                print(f"✅ Global Quote encontrado para {simbolo}: {quote}")
+                print(f"✅ Global Quote REAL encontrado para {simbolo}")
                 
-                # Obtener valores con manejo de errores
                 try:
                     precio = float(quote.get("05. price", 0))
                     cambio = float(quote.get("09. change", 0))
                     porcentaje_cambio = quote.get("10. change percent", "0%").replace("%", "")
+                    
+                    if precio <= 0:
+                        raise ValueError("Precio inválido recibido de la API")
                     
                     resultado = {
                         "simbolo": simbolo,
@@ -101,20 +102,21 @@ class AccionesService:
                         "success": True,
                         "timestamp": int(time.time()),
                         "volumen": quote.get("06. volume", "N/A"),
-                        "ultimo_dia_trading": quote.get("07. latest trading day", "N/A")
+                        "ultimo_dia_trading": quote.get("07. latest trading day", "N/A"),
+                        "fuente": "alpha_vantage_real"
                     }
                     
                     # Guardar en cache
                     try:
                         cache.set(cache_key, resultado, self.cache_timeout)
-                        print(f"💾 Datos de {simbolo} guardados en cache")
+                        print(f"💾 Datos REALES de {simbolo} guardados en cache: ${precio:.2f}")
                     except Exception as e:
                         print(f"⚠️ Error guardando en cache para {simbolo}: {e}")
                     
                     return resultado
                     
                 except (ValueError, TypeError) as e:
-                    error_msg = f"Error procesando datos numéricos para {simbolo}: {e}"
+                    error_msg = f"Error procesando datos REALES para {simbolo}: {e}"
                     print(f"❌ {error_msg}")
                     return {
                         "simbolo": simbolo,
@@ -123,19 +125,18 @@ class AccionesService:
                         "timestamp": int(time.time())
                     }
             
-            # Si llegamos aquí, no hay Global Quote
-            error_msg = f"No se encontró 'Global Quote' en la respuesta para {simbolo}"
+            # Si llegamos aquí, no hay Global Quote válido
+            error_msg = f"No se encontraron datos reales válidos para {simbolo}"
             print(f"❌ {error_msg}")
             return {
                 "simbolo": simbolo,
                 "error": error_msg,
                 "success": False,
-                "timestamp": int(time.time()),
-                "respuesta_api": data  # Para debugging
+                "timestamp": int(time.time())
             }
                 
         except requests.exceptions.Timeout:
-            error_msg = f"Timeout obteniendo datos para {simbolo}"
+            error_msg = f"Timeout obteniendo datos REALES para {simbolo}"
             print(f"❌ {error_msg}")
             return {
                 "simbolo": simbolo,
@@ -163,20 +164,20 @@ class AccionesService:
             }
     
     def obtener_todas_las_acciones(self, simbolos: List[str] = None) -> Dict[str, Any]:
-        """Obtiene TODAS las acciones, con fallback a datos de prueba"""
+        """Obtiene TODAS las acciones REALES"""
         if simbolos is None:
             simbolos = self.simbolos
         
         simbolos = [s.upper().strip() for s in simbolos[:5]]
-        print(f"🎯 Obteniendo acciones para: {simbolos}")
+        print(f"🎯 Obteniendo acciones REALES de Alpha Vantage: {simbolos}")
         
         resultados = []
         
-        # Intentar obtener cada símbolo
+        # Intentar obtener cada símbolo con pausa entre llamadas
         for i, simbolo in enumerate(simbolos):
             if i > 0:
                 print(f"⏳ Esperando 12 segundos antes de llamar API para {simbolo}...")
-                time.sleep(12)
+                time.sleep(12)  # Respetar rate limits
             
             resultado = self.obtener_cotizacion(simbolo)
             resultados.append(resultado)
@@ -185,51 +186,16 @@ class AccionesService:
         exitosas = [r for r in resultados if r.get("success")]
         fallidas = [r for r in resultados if not r.get("success")]
         
-        print(f"📊 Resultados: {len(exitosas)} exitosas, {len(fallidas)} fallidas")
-        
-        # Si no hay ninguna exitosa, usar datos de fallback
-        if len(exitosas) == 0:
-            print("🔄 No hay datos exitosos, usando fallback")
-            resultados = self._generar_datos_fallback(simbolos)
+        print(f"📊 Alpha Vantage REAL: {len(exitosas)} exitosas, {len(fallidas)} fallidas")
         
         return {
             "acciones": resultados,
             "total": len(resultados),
             "exitosas": len(exitosas),
             "fallidas": len(fallidas),
-            "simbolos_solicitados": simbolos
+            "simbolos_solicitados": simbolos,
+            "fuente": "alpha_vantage_real"
         }
-    
-    def _generar_datos_fallback(self, simbolos: List[str]) -> List[Dict[str, Any]]:
-        """Genera datos de fallback realistas"""
-        import random
-        
-        precios_base = {
-            "AAPL": 175.43,
-            "GOOGL": 142.65, 
-            "MSFT": 412.89,
-            "TSLA": 248.50,
-            "AMZN": 155.78
-        }
-        
-        resultados = []
-        for simbolo in simbolos:
-            precio_base = precios_base.get(simbolo, 100.0)
-            precio = precio_base + random.uniform(-5, 5)
-            cambio = random.uniform(-3, 3)
-            porcentaje = (cambio / precio) * 100
-            
-            resultados.append({
-                "simbolo": simbolo,
-                "precio": round(precio, 2),
-                "cambio": round(cambio, 2),
-                "porcentaje_cambio": f"{porcentaje:.2f}",
-                "success": True,
-                "timestamp": int(time.time()),
-                "fuente": "fallback"
-            })
-        
-        return resultados
 
 # Instancia del servicio
 acciones_service = AccionesService()
