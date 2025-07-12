@@ -1,79 +1,115 @@
-// components/accionesWIdget.tsx
 import React, { useState, useEffect } from 'react';
 
-const AccionesWidget = () => {
-  const [lastUpdate, setLastUpdate] = useState(new Date());
-  
-  const stockData = [
-    { symbol: 'AAPL', price: '$209.95', change: '-3.60', percentage: '(-1.69%)', isNegative: true },
-    { symbol: 'GOOGL', price: '$176.79', change: '-2.74', percentage: '(-1.53%)', isNegative: true },
-    { symbol: 'MSFT', price: '$497.72', change: '-1.12', percentage: '(-0.22%)', isNegative: true },
-    { symbol: 'TSLA', price: '$293.94', change: '-21.41', percentage: '(-6.79%)', isNegative: true },
-    { symbol: 'AMZN', price: '$223.47', change: '+0.06', percentage: '(0.03%)', isNegative: false },
-  ];
+interface Accion {
+  simbolo: string;
+  precio: number;
+  cambio: number;
+  porcentaje_cambio: string;
+}
+
+const AccionesWidget: React.FC = () => {
+  const [acciones, setAcciones] = useState<Accion[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [lastUpdate, setLastUpdate] = useState<Date | null>(null);
+
+  const fetchAcciones = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch('http://localhost:8000/api/acciones/', {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+      });
+
+      if (!response.ok) throw new Error(`Error HTTP: ${response.status}`);
+      const data = await response.json();
+
+      if (data.acciones && Array.isArray(data.acciones)) {
+        setAcciones(data.acciones);
+        setError(null);
+        setLastUpdate(new Date());
+      } else {
+        throw new Error('Formato de datos incorrecto');
+      }
+    } catch (err) {
+      console.error('Error al obtener acciones:', err);
+      setError(err instanceof Error ? err.message : 'Error desconocido');
+
+      // Datos de respaldo
+      setAcciones([
+        { simbolo: "AAPL", precio: 175.43, cambio: 2.15, porcentaje_cambio: "1.24" },
+        { simbolo: "GOOGL", precio: 2845.67, cambio: -12.34, porcentaje_cambio: "-0.43" },
+        { simbolo: "MSFT", precio: 412.89, cambio: 5.67, porcentaje_cambio: "1.39" },
+        { simbolo: "TSLA", precio: 248.50, cambio: -3.25, porcentaje_cambio: "-1.29" },
+        { simbolo: "AMZN", precio: 3456.78, cambio: 15.23, porcentaje_cambio: "0.44" }
+      ]);
+      setLastUpdate(new Date());
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setLastUpdate(new Date());
-      // Aquí podrías actualizar los datos reales
-    }, 30000);
-
+    fetchAcciones();
+    const interval = setInterval(fetchAcciones, 30000);
     return () => clearInterval(interval);
   }, []);
 
+  if (loading) {
+    return (
+      <div className="bg-white p-4 rounded-lg shadow text-center">
+        <div className="animate-spin border-4 border-gray-200 border-t-blue-500 rounded-full w-8 h-8 mx-auto mb-2" />
+        <p className="text-sm text-gray-700">Cargando indicadores del mercado...</p>
+      </div>
+    );
+  }
+
   return (
-    <div className="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 h-full">
-      {/* Header */}
-      <div className="border-b border-gray-200 pb-3 mb-4">
-        <h3 className="text-lg font-semibold text-gray-800 text-center">
-          Indicadores de Mercado
-        </h3>
-        <p className="text-sm text-gray-500 text-center mt-1">
-          En Tiempo Real
-        </p>
+    <div className="bg-white p-6 rounded-xl shadow-md w-full max-w-md mx-auto">
+      <div className="flex justify-between items-center mb-4">
+        <h3 className="text-lg font-semibold text-gray-800">Indicadores de Mercado en Tiempo Real</h3>
+        {error && (
+          <div className="text-sm text-red-600 italic" title={error}>
+            ⚠️ Usando datos de respaldo
+          </div>
+        )}
       </div>
 
-      {/* Stock Table */}
-      <div className="space-y-3">
-        {stockData.map((stock, index) => (
-          <div 
-            key={index} 
-            className="flex justify-between items-center py-2 px-3 rounded-lg hover:bg-gray-50 transition-colors duration-200 border-l-4 border-transparent hover:border-blue-400"
+      <div className="flex flex-col gap-3">
+        {acciones.map(({ simbolo, precio, cambio, porcentaje_cambio }) => (
+          <div
+            key={simbolo}
+            className="bg-blue-50 rounded-lg p-4 flex flex-col justify-between"
           >
-            {/* Left side - Symbol and Price */}
-            <div className="flex flex-col">
-              <span className="font-bold text-gray-800 text-sm">
-                {stock.symbol}
-              </span>
-              <span className="text-xs text-gray-500">
-                {stock.price}
-              </span>
+            <div className="flex justify-between font-semibold mb-1">
+              <span className="text-gray-800">{simbolo}</span>
+              <span className="text-blue-600">${precio.toFixed(2)}</span>
             </div>
-            
-            {/* Right side - Change and Percentage */}
-            <div className="flex flex-col items-end">
-              <span className={`font-semibold text-sm ${
-                stock.isNegative ? 'text-red-600' : 'text-green-600'
-              }`}>
-                {stock.change}
+            <div
+              className={`flex justify-between text-sm ${
+                cambio >= 0 ? 'text-green-600' : 'text-red-600'
+              }`}
+            >
+              <span>
+                {cambio >= 0 ? '+' : ''}
+                {cambio.toFixed(2)}
               </span>
-              <span className={`text-xs ${
-                stock.isNegative ? 'text-red-500' : 'text-green-500'
-              }`}>
-                {stock.percentage}
-              </span>
+              <span>({porcentaje_cambio}%)</span>
             </div>
           </div>
         ))}
       </div>
 
-      {/* Footer */}
-      <div className="mt-6 pt-4 border-t border-gray-200">
-        <div className="flex items-center justify-center text-xs text-gray-500">
-          <div className="w-2 h-2 bg-blue-500 rounded-full mr-2 animate-pulse"></div>
-          <span>Actualización automática cada 30 segundos</span>
-        </div>
+      <div className="text-center mt-4 text-xs text-gray-500 flex items-center justify-center gap-2">
+        <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
+        <span>Actualización automática cada 30 segundos</span>
       </div>
+
+      {lastUpdate && (
+        <div className="text-center mt-1 text-xs text-gray-400 italic">
+          Última actualización: {lastUpdate.toLocaleTimeString('es-CL')}
+        </div>
+      )}
     </div>
   );
 };

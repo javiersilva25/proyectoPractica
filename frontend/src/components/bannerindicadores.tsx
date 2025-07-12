@@ -21,24 +21,6 @@ const BannerIndicadores = () => {
     indice_remuneraciones: 'Remuneraciones',
   };
 
-<<<<<<< Updated upstream
-  return (
-    <>
-      <div className="banner-container">
-        <div className="banner-content">
-          {Object.entries(nombres).map(([clave, nombre]) => {
-            const indicador = indicadores[clave];
-            if (!indicador) return null;
-
-            return (
-              <span className="banner-item" key={clave}>
-                {nombre}: {indicador.valor.toLocaleString('es-CL', {
-                  style: 'decimal',
-                  maximumFractionDigits: 2,
-                })} {indicador.unidad_medida}
-              </span>
-            );
-=======
   // Filtrar indicadores disponibles
   const indicadoresDisponibles = Object.entries(nombres).filter(([clave]) => 
     indicadores[clave]
@@ -82,7 +64,6 @@ const BannerIndicadores = () => {
           {indicador.valor.toLocaleString('es-CL', {
             style: 'decimal',
             maximumFractionDigits: 2,
->>>>>>> Stashed changes
           })}
         </span>{' '}
         <span className="text-xs opacity-75">{indicador.unidad_medida}</span>
@@ -122,11 +103,8 @@ const BannerIndicadores = () => {
         </div>
       </div>
 
+      {/* Fecha de actualización */}
       {fecha && (
-<<<<<<< Updated upstream
-        <div className="banner-date">
-          Datos actualizados al {new Date(fecha).toLocaleDateString('es-CL')}
-=======
         <div className="bg-gray-50 text-center text-xs italic text-gray-600 py-1 px-4">
           Datos actualizados al{' '}
           {new Date(fecha).toLocaleDateString('es-CL', {
@@ -134,7 +112,6 @@ const BannerIndicadores = () => {
             month: '2-digit',
             day: '2-digit'
           })}
->>>>>>> Stashed changes
         </div>
       )}
     </div>

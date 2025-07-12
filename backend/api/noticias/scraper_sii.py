@@ -53,3 +53,6 @@ def scrape_sii():
             noticias_insertadas += 1
 
     print(f"\n✅ Se insertaron {noticias_insertadas} noticias desde sii.cl")
+
+if __name__ == "__main__":
+    scrape_sii()
