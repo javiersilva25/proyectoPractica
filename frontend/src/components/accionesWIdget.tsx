@@ -89,7 +89,7 @@ const AccionesWidget: React.FC = () => {
   useEffect(() => {
     fetchAcciones();
 
-    // Actualizar cada 15 minutos
+    // Actualizar cada 5 minutos
     const interval = setInterval(fetchAcciones, 300000);
     
     return () => clearInterval(interval);
@@ -99,7 +99,7 @@ const AccionesWidget: React.FC = () => {
     return (
       <div className="bg-white p-4 rounded-lg shadow text-center">
         <div className="animate-spin border-4 border-gray-200 border-t-blue-500 rounded-full w-8 h-8 mx-auto mb-2" />
-        <p className="text-sm text-gray-700">Conectando con APIs reales...</p>
+        <p className="text-sm text-gray-700">Obteniendo datos...</p>
       </div>
     );
   }
@@ -137,7 +137,7 @@ const AccionesWidget: React.FC = () => {
     <div className="bg-white p-6 rounded-xl shadow-md w-full max-w-md mx-auto">
       <div className="flex justify-between items-center mb-4">
         <h3 className="text-lg font-semibold text-gray-800">
-          Datos Reales de Mercado
+          Datos Actuales de Mercado
         </h3>
         <div className="text-sm text-green-600 italic flex items-center">
           <div className="w-2 h-2 bg-green-500 rounded-full mr-1 animate-pulse"></div>
@@ -186,7 +186,7 @@ const AccionesWidget: React.FC = () => {
       <div className="text-center mt-4 text-xs text-gray-500">
         <div className="flex items-center justify-center gap-2 mb-1">
         <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-         <span>Datos reales en tiempo real</span>
+         <span>Datos actuales en tiempo real</span>
        </div>
        
        {apiInfo && (
@@ -209,7 +209,7 @@ const AccionesWidget: React.FC = () => {
          disabled={loading}
          className="text-xs text-blue-600 hover:text-blue-800 underline disabled:opacity-50"
        >
-         {loading ? 'Actualizando...' : 'Actualizar datos reales'}
+         {loading ? 'Actualizando...' : 'Actualizar datos manualmente'}
        </button>
      </div>
    </div>
