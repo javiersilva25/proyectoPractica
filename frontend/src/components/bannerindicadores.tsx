@@ -1,7 +1,10 @@
 import { useIndicadores } from '../hooks/useIndicadores';
+import { useState, useEffect } from 'react';
 
 const BannerIndicadores = () => {
   const { datos: indicadores, fecha } = useIndicadores();
+  const [indicadorActual, setIndicadorActual] = useState(0);
+  const [mostrarCompleto, setMostrarCompleto] = useState(false);
 
   const nombres: Record<string, string> = {
     uf: 'UF',
@@ -18,37 +21,100 @@ const BannerIndicadores = () => {
     indice_remuneraciones: 'Remuneraciones',
   };
 
-  return (
-    <>
-      {/* Banner de indicadores con animación */}
-      <div className="overflow-hidden whitespace-nowrap bg-blue-100 py-2 border-b border-gray-300 relative">
-        <div className="inline-block pl-full animate-marquee text-sm text-gray-800 font-medium">
-          {Object.entries(nombres).map(([clave, nombre]) => {
-            const indicador = indicadores[clave];
-            if (!indicador) return null;
+  // Filtrar indicadores disponibles
+  const indicadoresDisponibles = Object.entries(nombres).filter(([clave]) => 
+    indicadores[clave]
+  );
 
-            return (
-              <span key={clave} className="inline-block mr-10">
-                {nombre}:{' '}
-                {indicador.valor.toLocaleString('es-CL', {
-                  style: 'decimal',
-                  maximumFractionDigits: 2,
-                })}{' '}
-                {indicador.unidad_medida}
-              </span>
-            );
+  useEffect(() => {
+    const timer = setInterval(() => {
+      if (!mostrarCompleto) {
+        if (indicadorActual < indicadoresDisponibles.length - 1) {
+          setIndicadorActual(prev => prev + 1);
+        } else {
+          setMostrarCompleto(true);
+          setTimeout(() => {
+            setMostrarCompleto(false);
+            setIndicadorActual(0);
+          }, 60000);
+        }
+      }
+    }, 1500);
+
+    return () => clearInterval(timer);
+  }, [indicadorActual, mostrarCompleto, indicadoresDisponibles.length]);
+
+  const contenidoVisible = mostrarCompleto 
+    ? indicadoresDisponibles 
+    : indicadoresDisponibles.slice(0, indicadorActual + 1);
+
+  const renderIndicador = ([clave, nombre]: [string, string], index: number) => {
+    const indicador = indicadores[clave];
+    if (!indicador) return null;
+
+    return (
+      <span 
+        key={clave} 
+        className={`inline-block mr-6 whitespace-nowrap transition-all duration-500 ${
+          !mostrarCompleto && index === indicadorActual ? 'animate-slide-in' : ''
+        }`}
+      >
+        <span className="font-medium">{nombre}:</span>{' '}
+        <span className="font-semibold">
+          {indicador.valor.toLocaleString('es-CL', {
+            style: 'decimal',
+            maximumFractionDigits: 2,
           })}
+        </span>{' '}
+        <span className="text-xs opacity-75">{indicador.unidad_medida}</span>
+      </span>
+    );
+  };
+
+  return (
+    <div className="w-full">
+      {/* Banner de indicadores */}
+      <div className="bg-blue-100 border-b border-gray-300">
+        <div className="overflow-hidden py-3">
+          {mostrarCompleto ? (
+            // Animación completa tipo marquee
+            <div className="flex animate-marquee-seamless text-sm text-gray-800">
+              <div className="flex shrink-0 whitespace-nowrap">
+                {contenidoVisible.map(renderIndicador)}
+              </div>
+              <div className="flex shrink-0 items-center mx-8">
+                <div className="w-2 h-2 bg-blue-600 rounded-full"></div>
+              </div>
+              <div className="flex shrink-0 whitespace-nowrap">
+                {contenidoVisible.map(renderIndicador)}
+              </div>
+              <div className="flex shrink-0 items-center mx-8">
+                <div className="w-2 h-2 bg-blue-600 rounded-full"></div>
+              </div>
+            </div>
+          ) : (
+            // Mostrar indicadores uno por uno - centrado
+            <div className="text-sm text-gray-800 text-center px-4 min-h-[24px] flex items-center justify-center">
+              <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
+                {contenidoVisible.map(renderIndicador)}
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
       {/* Fecha de actualización */}
       {fecha && (
-        <div className="text-center text-xs italic text-gray-600 mt-1">
+        <div className="bg-gray-50 text-center text-xs italic text-gray-600 py-1 px-4">
           Datos actualizados al{' '}
-          {new Date(fecha).toLocaleDateString('es-CL')}
+          {new Date(fecha).toLocaleDateString('es-CL', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit'
+          })}
         </div>
       )}
-    </>
+    </div>
   );
 };
 
