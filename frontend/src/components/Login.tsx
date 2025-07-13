@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react'
-import type { ChangeEvent, FormEvent } from 'react'
+import { useState, useEffect, type ChangeEvent, type FormEvent } from 'react'
 import { useNavigate, useLocation, Link } from 'react-router-dom'
 import axios from 'axios'
+
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
 import BannerIndicadores from './bannerindicadores'
@@ -13,8 +13,8 @@ interface LoginForm {
 
 export default function Login() {
   const [form, setForm] = useState<LoginForm>({ username: '', password: '' })
-  const [error, setError] = useState<string>('')
-  const [registroExitoso, setRegistroExitoso] = useState<boolean>(false)
+  const [error, setError] = useState('')
+  const [registroExitoso, setRegistroExitoso] = useState(false)
   const navigate = useNavigate()
   const location = useLocation()
 
@@ -32,18 +32,14 @@ export default function Login() {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
     setError('')
-
     try {
-      const response = await axios.post('http://localhost:8000/api/login/', form, {
+      const { data } = await axios.post('http://localhost:8000/api/login/', form, {
         headers: { 'Content-Type': 'application/json' },
       })
-
-      const { access, refresh } = response.data
-      localStorage.setItem('access', access)
-      localStorage.setItem('refresh', refresh)
-
+      localStorage.setItem('access', data.access)
+      localStorage.setItem('refresh', data.refresh)
       navigate('/dashboard')
-    } catch (err: any) {
+    } catch {
       setError('Credenciales incorrectas')
     }
   }
@@ -54,7 +50,7 @@ export default function Login() {
       <BannerIndicadores />
 
       <main className="flex-grow flex items-center justify-center bg-gray-100 px-4">
-        <form onSubmit={handleSubmit} className="bg-white p-8 rounded shadow-md w-full max-w-md space-y-4">
+        <div className="w-full max-w-md bg-white p-8 rounded shadow-md space-y-4">
           <h2 className="text-2xl font-bold text-center">Iniciar sesión</h2>
 
           {registroExitoso && (
@@ -63,31 +59,36 @@ export default function Login() {
             </p>
           )}
 
-          <input
-            name="username"
-            type="text"
-            placeholder="Nombre de usuario"
-            value={form.username}
-            onChange={handleChange}
-            className="w-full p-2 border rounded"
-            required
-          />
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <input
+              name="username"
+              type="text"
+              placeholder="Nombre de usuario"
+              value={form.username}
+              onChange={handleChange}
+              className="w-full p-2 border rounded"
+              required
+            />
 
-          <input
-            name="password"
-            type="password"
-            placeholder="Contraseña"
-            value={form.password}
-            onChange={handleChange}
-            className="w-full p-2 border rounded"
-            required
-          />
+            <input
+              name="password"
+              type="password"
+              placeholder="Contraseña"
+              value={form.password}
+              onChange={handleChange}
+              className="w-full p-2 border rounded"
+              required
+            />
 
-          {error && <p className="text-red-500 text-sm">{error}</p>}
+            {error && <p className="text-red-500 text-sm">{error}</p>}
 
-          <button type="submit" className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600">
-            Iniciar sesión
-          </button>
+            <button
+              type="submit"
+              className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600"
+            >
+              Iniciar sesión
+            </button>
+          </form>
 
           <p className="text-center text-sm text-gray-600">
             ¿No tienes una cuenta?{' '}
@@ -95,7 +96,7 @@ export default function Login() {
               Regístrate aquí
             </Link>
           </p>
-        </form>
+        </div>
       </main>
 
       <Footer />
