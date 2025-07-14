@@ -9,7 +9,9 @@ from api.views import NoticiaListView, indicadores_banco_central
 from api.views.auth_views import RegistroClienteView
 from api.views.documento import DocumentoClienteViewSet
 from api.views.mensaje import MensajeClienteViewSet
-from api.views.perfil import get_perfil  # 👈 NUEVO
+from api.views.perfil import get_perfil
+from api.views.usuarios import listar_clientes
+from api.views.dashboard_gerente import indicadores_gerente
 
 # Router para los ViewSets
 router = DefaultRouter()
@@ -28,7 +30,11 @@ urlpatterns = [
     # Rutas protegidas
     path('cliente/dashboard/', ClienteDashboardView.as_view(), name='cliente-dashboard'),
     path('registro/', RegistroClienteView.as_view(), name='registro-cliente'),
-    path('perfil/', get_perfil, name='get-perfil'),  # 👈 NUEVA RUTA
+    path('perfil/', get_perfil, name='get-perfil'),
+    path('gerente/indicadores/', indicadores_gerente, name='indicadores-gerente'),
+
+
+    path('usuarios/clientes/', listar_clientes, name='listar-clientes'),
 
     # ViewSets
     path('', include(router.urls)),

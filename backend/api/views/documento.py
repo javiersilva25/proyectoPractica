@@ -13,7 +13,11 @@ class DocumentoClienteViewSet(viewsets.ModelViewSet):
         return DocumentoCliente.objects.filter(cliente=self.request.user)
 
     def perform_create(self, serializer):
-        serializer.save(cliente=self.request.user)
+        if self.request.user.rol == 'gerente':
+            serializer.save()  # El gerente debe incluir 'cliente' en el body
+        else:
+            serializer.save(cliente=self.request.user)
+
 
     @action(detail=True, methods=['post'], permission_classes=[permissions.IsAuthenticated])
     def marcar_revisado(self, request, pk=None):

@@ -24,7 +24,7 @@ class DocumentoClienteSerializer(serializers.ModelSerializer):
     class Meta:
         model = DocumentoCliente
         fields = '__all__'  # o explícitamente: ['id', 'titulo', 'mensaje', 'archivo', 'fecha_subida', 'revisado']
-        read_only_fields = ['cliente', 'fecha_subida']
+        read_only_fields = ['fecha_subida']
 
     def get_revisado(self, obj):
         request = self.context.get('request')
@@ -32,9 +32,21 @@ class DocumentoClienteSerializer(serializers.ModelSerializer):
             return False
         return DocumentoLeido.objects.filter(documento=obj, cliente=request.user).exists()
     
+    def validate_cliente(self, value):
+        request = self.context.get('request')
+        if request.user.rol != 'gerente' and value != request.user:
+            raise serializers.ValidationError("No puedes asignar documentos a otros usuarios.")
+        return value
+    
 class MensajeClienteSerializer(serializers.ModelSerializer):
     class Meta:
         model = MensajeCliente
         fields = '__all__'
-        read_only_fields = ['cliente', 'fecha']
+        read_only_fields = ['fecha']
+
+    def validate_cliente(self, value):
+        request = self.context.get('request')
+        if request.user.rol != 'gerente' and value != request.user:
+            raise serializers.ValidationError("No puedes enviar mensajes a otros usuarios.")
+        return value
 

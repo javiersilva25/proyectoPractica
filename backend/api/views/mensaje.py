@@ -9,10 +9,18 @@ class MensajeClienteViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
-        return MensajeCliente.objects.filter(cliente=self.request.user).order_by('-fecha')
+        user = self.request.user
+        if user.rol == 'gerente':
+            return MensajeCliente.objects.all().order_by('-fecha')
+        return MensajeCliente.objects.filter(cliente=user).order_by('-fecha')
+
 
     def perform_create(self, serializer):
-        serializer.save(cliente=self.request.user)
+        if self.request.user.rol == 'gerente':
+            serializer.save()  # Cliente viene del frontend
+        else:
+            serializer.save(cliente=self.request.user)
+
 
     @action(detail=True, methods=['post'])
     def marcar_leido(self, request, pk=None):

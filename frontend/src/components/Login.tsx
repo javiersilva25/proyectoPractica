@@ -36,13 +36,29 @@ export default function Login() {
       const { data } = await axios.post('http://localhost:8000/api/login/', form, {
         headers: { 'Content-Type': 'application/json' },
       })
+
       localStorage.setItem('access', data.access)
       localStorage.setItem('refresh', data.refresh)
-      navigate('/dashboard')
+
+      // Luego de guardar el token, obtenemos el perfil para saber el rol
+      const perfil = await axios.get('http://localhost:8000/api/perfil/', {
+        headers: {
+          Authorization: `Bearer ${data.access}`,
+        },
+      })
+
+      const { rol, is_superuser } = perfil.data
+
+      if (rol === 'gerente' || is_superuser) {
+        navigate('/dashboard/gerente')
+      } else {
+        navigate('/dashboard')
+      }
     } catch {
       setError('Credenciales incorrectas')
     }
   }
+
 
   return (
     <div className="flex flex-col min-h-screen">

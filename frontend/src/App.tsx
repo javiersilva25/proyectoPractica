@@ -6,6 +6,8 @@ import RutaPrivada from './components/RutaPrivada'
 import Registro from './components/Register'
 import DocumentosCliente from './components/DocumentoCliente'
 import { Toaster } from 'react-hot-toast'
+import DashboardGerente from './pages/DashboardGerente'
+
 
 
 export default function App() {
@@ -28,6 +30,14 @@ export default function App() {
           element={
             <RutaPrivada>
               <DocumentosCliente />
+            </RutaPrivada>
+          }
+        />
+        <Route
+          path="/dashboard/gerente"
+          element={
+            <RutaPrivada>
+              <DashboardGerente />
             </RutaPrivada>
           }
         />

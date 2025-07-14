@@ -5,9 +5,11 @@ from rest_framework.response import Response
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def get_perfil(request):
-    usuario = request.user  # ya es instancia de CustomUser autenticado
+    usuario = request.user
 
     return Response({
-        "nombre": f"{usuario.username}".strip(),
+        "nombre": usuario.get_full_name() or usuario.username,
         "correo": usuario.email,
+        "rol": getattr(usuario, 'rol', None),         
+        "is_superuser": usuario.is_superuser,         
     })
