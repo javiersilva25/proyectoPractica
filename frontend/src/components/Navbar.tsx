@@ -56,7 +56,7 @@ export default function Navbar() {
           {/* Logo */}
           <div className="flex-shrink-0">
             <Link to="/" className="text-xl font-bold text-blue-600 tracking-tight hover:opacity-80 transition">
-              🧾 JMG
+              🧾 JMG Asesores Contables
             </Link>
           </div>
 
