@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Noticia, DocumentoCliente, DocumentoLeido
+from .models import Noticia, DocumentoCliente, DocumentoLeido, MensajeContacto
 from django.contrib.auth.models import User
 from .models import MensajeCliente
 
@@ -50,3 +50,9 @@ class MensajeClienteSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("No puedes enviar mensajes a otros usuarios.")
         return value
 
+
+class MensajeContactoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MensajeContacto
+        fields = '__all__'
+        read_only_fields = ['leido', 'creado_en']

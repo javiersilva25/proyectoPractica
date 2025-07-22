@@ -12,19 +12,27 @@ export const useHistorial = (indicador: string, anio: number) => {
 
   useEffect(() => {
     setLoading(true);
-    axios.get(`https://mindicador.cl/api/${indicador}/${anio}`)
-      .then(res => {
-        const serie = res.data.serie.map((item: any) => ({
-          fecha: item.fecha.slice(0, 10),
-          valor: item.valor,
-        }));
+    axios
+      .get(`https://mindicador.cl/api/${indicador}/${anio}`)
+      .then((res) => {
+        const serie = res.data.serie
+          .filter(
+            (item: any) =>
+              item &&
+              item.valor !== null &&
+              item.valor !== undefined &&
+              !isNaN(Number(item.valor))
+          )
+          .map((item: any) => ({
+            fecha: item.fecha.slice(0, 10),
+            valor: Number(item.valor),
+          }));
+
         setDatos(serie.reverse());
       })
-      .catch(err => console.error("Error al obtener histórico", err))
+      .catch((err) => console.error('Error al obtener histórico', err))
       .finally(() => setLoading(false));
   }, [indicador, anio]);
 
   return { datos, loading };
 };
-
-
