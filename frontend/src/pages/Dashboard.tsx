@@ -78,7 +78,7 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="flex flex-col min-h-screen font-sans text-base text-gray-800">
+    <div className="flex flex-col min-h-screen font-sans text-base text-gray-800 text-sm mx-auto max-w-7xl px-2">
       <Navbar />
       <BannerIndicadores />
 

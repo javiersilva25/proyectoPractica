@@ -18,31 +18,41 @@ const BannerIndicadores = () => {
     indice_remuneraciones: 'Remuneraciones',
   };
 
+  const cargando = Object.keys(indicadores).length === 0;
+
   return (
     <>
-      {/* Banner de indicadores con animación */}
-      <div className="overflow-hidden whitespace-nowrap bg-blue-100 py-2 border-b border-gray-300 relative">
-        <div className="inline-block pl-full animate-marquee text-sm text-gray-800 font-medium">
-          {Object.entries(nombres).map(([clave, nombre]) => {
-            const indicador = indicadores[clave];
-            if (!indicador) return null;
+      <div className="bg-blue-100 border-b border-gray-300">
+        <div className="mx-auto max-w-7xl px-4 py-2">
+          {cargando ? (
+            <div className="text-sm text-gray-800 font-medium text-center">
+              🔄 Cargando indicadores...
+            </div>
+          ) : (
+            <div className="overflow-hidden whitespace-nowrap">
+              <div className="inline-block pl-full animate-marquee text-sm text-gray-800 font-medium">
+                {Object.entries(nombres).map(([clave, nombre]) => {
+                  const indicador = indicadores[clave];
+                  if (!indicador) return null;
 
-            return (
-              <span key={clave} className="inline-block mr-10">
-                {nombre}:{' '}
-                {indicador.valor.toLocaleString('es-CL', {
-                  style: 'decimal',
-                  maximumFractionDigits: 2,
-                })}{' '}
-                {indicador.unidad_medida}
-              </span>
-            );
-          })}
+                  return (
+                    <span key={clave} className="inline-block mr-10">
+                      {nombre}:{' '}
+                      {indicador.valor.toLocaleString('es-CL', {
+                        style: 'decimal',
+                        maximumFractionDigits: 2,
+                      })}{' '}
+                      {indicador.unidad_medida}
+                    </span>
+                  );
+                })}
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
-      {/* Fecha de actualización */}
-      {fecha && (
+      {fecha && !cargando && (
         <div className="text-center text-xs italic text-gray-600 mt-1">
           Datos actualizados al{' '}
           {new Date(fecha).toLocaleDateString('es-CL')}

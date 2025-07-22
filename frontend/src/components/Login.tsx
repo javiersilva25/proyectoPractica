@@ -61,7 +61,7 @@ export default function Login() {
 
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen text-sm mx-auto max-w-7xl px-2">
       <Navbar />
       <BannerIndicadores />
 

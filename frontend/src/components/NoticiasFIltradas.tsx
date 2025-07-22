@@ -14,7 +14,7 @@ const NoticiasFiltradas = () => {
   const { noticias, loading } = useNoticias(categoria);
 
   return (
-    <div className="bg-gray-100 p-6 rounded-xl shadow-md mt-6">
+    <div className="bg-gray-100 p-6 rounded-xl shadow-md mt-6 text-sm">
       {/* Encabezado */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-4">
         <h3 className="text-xl font-semibold text-gray-800">

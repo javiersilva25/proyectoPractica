@@ -4,6 +4,7 @@ import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
 import api from '../api/axios'
 import toast from 'react-hot-toast'
+import ContactoRecibido from '../components/ContactoRecibido.tsx'
 
 interface Cliente {
   id: number
@@ -112,7 +113,7 @@ export default function DashboardGerente() {
   }
 
   return (
-    <div className="flex flex-col min-h-screen font-sans">
+    <div className="flex flex-col min-h-screen font-sans text-sm">
       <Navbar />
       <main className="flex-grow bg-gray-50 py-12">
         <div className="max-w-5xl mx-auto px-4 space-y-10">
@@ -223,6 +224,7 @@ export default function DashboardGerente() {
               </div>
             </form>
           </section>
+                  <ContactoRecibido />
         </div>
       </main>
       <Footer />
