@@ -6,6 +6,7 @@ import GraficoHistorial from '../components/graficohistorial'
 import NoticiasFiltradas from '../components/NoticiasFIltradas'
 import AccionesWidget from '../components/accionesWIdget'
 import TeamSection from '../components/TeamSection'
+import IndicesGlobalesWidget from '../components/IndicesGlobalesWidget'
 
 const servicios = [
   {
@@ -61,13 +62,20 @@ export default function HomePage() {
       </section>
 
       {/* Noticias y Gráficos */}
-      <section className="grid md:grid-cols-3 gap-5 px-4 py-8">
+      <section className="flex flex-col gap-5 px-4 py-8">
         <div className="bg-white p-4 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300">
           <NoticiasFiltradas />
         </div>
-        <GraficoHistorial />
         <div className="bg-white p-4 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300">
-          <AccionesWidget />
+          <GraficoHistorial />
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <div className="bg-white p-4 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 h-full flex flex-col">
+            <AccionesWidget />
+          </div>
+          <div className="bg-white p-4 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 h-full flex flex-col">
+            <IndicesGlobalesWidget />
+          </div>
         </div>
       </section>
 
