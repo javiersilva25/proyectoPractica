@@ -15,12 +15,12 @@ const servicios = [
   },
   {
     titulo: 'Cumplimiento Normativo',
-    descripcion: 'Nos destacamos por nuestro conocimiento actualizado de las normativas fiscales y contables. Gracias a esto, hemos podido asesorar a muchos clientes en el cumplimiento de sus obligaciones legales, evitando sanciones y optimizando su carga tributaria.',
+    descripcion: 'Nos destacamos por nuestro conocimiento actualizado de las normativas fiscales y contables.',
     imagen: 'https://www.floresattorneys.com/wp-content/uploads/2020/07/thumb-tax-litigation_support.jpg'
   },
   {
     titulo: 'Innovación y Tecnología',
-    descripcion: 'Nuestra empresa utiliza herramientas tecnológicas avanzadas que facilitan la gestión contable y financiera. Esto no solo mejora la eficiencia, sino que también proporciona a nuestros clientes información oportuna para la toma de decisiones estratégicas.',
+    descripcion: 'Nuestra empresa utiliza herramientas tecnológicas avanzadas que facilitan la gestión contable y financiera.',
     imagen: 'https://5092991.fs1.hubspotusercontent-na1.net/hubfs/5092991/Blog%20notas%20maestrias%20y%20diplomados/Innovaci%C3%B3n%20tecnol%C3%B3gica.jpg'
   }
 ]
@@ -51,11 +51,11 @@ export default function HomePage() {
 
       {/* Servicios */}
       <section className="bg-white px-5 py-10 flex flex-col md:flex-row justify-around gap-6 text-center">
-        {servicios.map((serv, idx) => (
-          <div key={idx} className="bg-blue-100 p-6 rounded-xl w-full md:w-1/4">
-            <img src={serv.imagen} alt={serv.titulo} className="w-full h-40 object-cover rounded-lg mb-4" />
-            <h3 className="text-lg font-semibold mb-2">{serv.titulo}</h3>
-            <p className="mb-4">{serv.descripcion}</p>
+        {servicios.map((servicio, i) => (
+          <div key={i} className="bg-blue-100 p-6 rounded-xl w-full md:w-1/4 transform hover:scale-105 transition-transform duration-300 shadow-lg hover:shadow-xl">
+            <img src={servicio.imagen} alt={servicio.titulo} className="w-full h-40 object-cover rounded-lg mb-4" />
+            <h3 className="text-lg font-semibold mb-2">{servicio.titulo}</h3>
+            <p className="mb-4">{servicio.descripcion}</p>
           </div>
         ))}
       </section>
