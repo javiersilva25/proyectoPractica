@@ -19,32 +19,61 @@ const indicadoresDisponibles = {
   ipc: 'IPC',
   imacec: 'IMACEC',
   ivp: 'IVP',
+  yen: 'Yen',
   libra_cobre: 'Cobre',
   tasa_desempleo: 'Desempleo',
+  tpm: 'TPM',
+  dolar_intercambio: 'Dólar Acuerdo',
 };
 
 const anios = Array.from({ length: 2025 - 2000 + 1 }, (_, i) => 2000 + i);
+
+// ✅ Calcula ticks parejos
+function calcularTicksParejos(min: number, max: number, cantidad = 5) {
+  if (min === max) {
+    return {
+      domain: [min - 1, min + 1],
+      ticks: [min - 1, min, min + 1],
+    };
+  }
+
+  const padding = (max - min) * 0.1;
+  const nuevoMin = min - padding;
+  const nuevoMax = max + padding;
+
+  const rango = nuevoMax - nuevoMin;
+  const stepCrudo = rango / cantidad;
+  const step = Math.pow(10, Math.floor(Math.log10(stepCrudo)));
+
+  // Ajustamos el paso para que se vea mejor
+  const stepFinal = Math.ceil(stepCrudo / step) * step;
+
+  const tickMin = Math.floor(nuevoMin / stepFinal) * stepFinal;
+  const tickMax = Math.ceil(nuevoMax / stepFinal) * stepFinal;
+
+  const ticks = [];
+  for (let i = tickMin; i <= tickMax; i += stepFinal) {
+    ticks.push(Number(i.toFixed(2)));
+  }
+
+  return { domain: [tickMin, tickMax], ticks };
+}
 
 const GraficoHistorial = () => {
   const [indicador, setIndicador] = useState('uf');
   const [anio, setAnio] = useState(new Date().getFullYear());
   const { datos, loading } = useHistorial(indicador, anio);
 
-  // Extraer valores numéricos válidos
-  const valores = datos.map((d) => Number(d.valor)).filter((v) => !isNaN(v));
+  const valores = datos?.map((d) => d.valor) || [];
+  const min = Math.min(...valores);
+  const max = Math.max(...valores);
 
-  const min = valores.length > 0 ? Math.min(...valores) : 0;
-  const max = valores.length > 0 ? Math.max(...valores) : 1;
-
-  // Asegurar dominio válido aunque min === max
-  const safeMin = min === max ? min - 1 : min;
-  const safeMax = min === max ? max + 1 : max;
+  const { domain, ticks } = calcularTicksParejos(min, max);
 
   return (
     <div className="flex flex-col items-center text-center px-4 py-6 bg-white rounded-lg shadow">
       <h3 className="text-lg font-semibold mb-4">Valores Históricos</h3>
 
-      {/* Selectores */}
       <div className="flex flex-wrap justify-center gap-4 mb-6">
         <select
           value={indicador}
@@ -71,28 +100,25 @@ const GraficoHistorial = () => {
         </select>
       </div>
 
-      {/* Gráfico */}
       {loading ? (
         <p className="text-gray-500 text-sm">Cargando datos...</p>
-      ) : valores.length === 0 ? (
-        <p className="text-sm text-gray-500">No hay datos válidos para este año o indicador.</p>
       ) : (
-        <ResponsiveContainer width="100%" height={300}>
+        <ResponsiveContainer width="100%" height={320}>
           <LineChart data={datos}>
-            <CartesianGrid stroke="#e0e0e0" strokeDasharray="5 5" />
+            <CartesianGrid stroke="#e0e0e0" strokeDasharray="3 3" />
             <XAxis
               dataKey="fecha"
               tick={{ fontSize: 10, fill: '#555' }}
               tickFormatter={(str) => {
                 const date = new Date(str);
-                return `${String(date.getDate()).padStart(2, '0')}/${String(
-                  date.getMonth() + 1,
-                ).padStart(2, '0')}`;
+                return `${String(date.getDate()).padStart(2, '0')}/${String(date.getMonth() + 1).padStart(2, '0')}`;
               }}
             />
             <YAxis
+              domain={domain}
+              ticks={ticks}
               tick={{ fontSize: 10, fill: '#555' }}
-              domain={[safeMin, safeMax]}
+              allowDecimals
             />
             <Tooltip
               formatter={(value: number) =>

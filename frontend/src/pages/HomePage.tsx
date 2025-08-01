@@ -68,25 +68,22 @@ export default function HomePage() {
         <section className="py-4 space-y-4 bg-gray-50">
           {/* Noticias (una sola columna) */}
           <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
-            <h2 className="text-base font-semibold text-gray-800 mb-2">📰 Noticias Destacadas</h2>
             <NoticiasFiltradas />
           </div>
 
           {/* Gráfico (una sola columna debajo) */}
           <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
-            <h2 className="text-base font-semibold text-gray-800 mb-2">📈 Historial de Indicadores</h2>
+            <h2 className="text-base font-semibold text-gray-800 mb-2">Historial de Indicadores</h2>
             <GraficoHistorial />
           </div>
 
           {/* Acciones e Índices (dos columnas) */}
           <div className="grid md:grid-cols-2 gap-4">
             <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
-              <h2 className="text-base font-semibold text-gray-800 mb-2">💼 Acciones Recomendadas</h2>
               <AccionesWidget />
             </div>
 
             <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
-              <h2 className="text-base font-semibold text-gray-800 mb-2">🌍 Índices Globales</h2>
               <IndicesGlobalesWidget />
             </div>
           </div>
