@@ -21,7 +21,7 @@ export const useNoticias = (categoria: string) => {
     setError(null);
 
     axios
-      .get(`http://localhost:8000/api/noticias/?categoria=${categoria}`)
+      .get(`https://jmgconsultores.cl/api/noticias/?categoria=${categoria}`)
       .then((res) => {
         console.log("🟢 Noticias recibidas:", res.data.results);
         setNoticias(res.data.results);

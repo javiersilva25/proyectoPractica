@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+//import { useNavigate } from 'react-router-dom'
 import api from '../api/axios'
 import Navbar from '../components/Navbar'
 import BannerIndicadores from '../components/bannerindicadores'
@@ -15,7 +15,7 @@ interface Documento {
 
 export default function DocumentosCliente() {
   const [documentos, setDocumentos] = useState<Documento[]>([])
-  const navigate = useNavigate()
+  //const navigate = useNavigate()
 
   const fetchDocumentos = async () => {
     try {

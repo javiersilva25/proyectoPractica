@@ -53,7 +53,7 @@ const IndicesGlobalesWidget: React.FC = () => {
     try {
       if (!loading) setRefreshing(true);
 
-      const response = await fetch('http://localhost:8000/api/acciones/indices/', {
+      const response = await fetch('https://jmgconsultores.cl/api/acciones/indices/', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',

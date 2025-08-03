@@ -33,7 +33,7 @@ export default function Login() {
     e.preventDefault()
     setError('')
     try {
-      const { data } = await axios.post('http://localhost:8000/api/login/', form, {
+      const { data } = await axios.post('https://jmgconsultores.cl/api/login/', form, {
         headers: { 'Content-Type': 'application/json' },
       })
 
@@ -41,7 +41,7 @@ export default function Login() {
       localStorage.setItem('refresh', data.refresh)
 
       // Luego de guardar el token, obtenemos el perfil para saber el rol
-      const perfil = await axios.get('http://localhost:8000/api/perfil/', {
+      const perfil = await axios.get('https://jmgconsultores.cl/api/perfil/', {
         headers: {
           Authorization: `Bearer ${data.access}`,
         },

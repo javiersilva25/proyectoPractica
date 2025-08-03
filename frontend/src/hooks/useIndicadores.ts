@@ -17,7 +17,7 @@ export const useIndicadores = () => {
   const [fecha, setFecha] = useState<string | null>(null);
 
   useEffect(() => {
-    axios.get('http://localhost:8000/api/indicadores')
+    axios.get('https://jmgconsultores.cl/api/indicadores')
       .then(res => {
         const copia = { ...res.data };
         setFecha(res.data.fecha);

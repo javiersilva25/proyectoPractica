@@ -30,7 +30,7 @@ export default function Register() {
 
     try {
       await axios.post(
-        'http://localhost:8000/api/registro/',
+        'https://jmgconsultores.cl/api/registro/',
         {
           username: form.username,
           email: form.email,

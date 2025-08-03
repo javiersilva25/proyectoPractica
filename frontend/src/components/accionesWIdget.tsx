@@ -52,7 +52,7 @@ const AccionesWidget: React.FC = () => {
   const fetchAcciones = useCallback(async () => {
     try {
       if (!loading) setRefreshing(true);
-      const response = await fetch('http://localhost:8000/api/acciones/', {
+      const response = await fetch('https://jmgconsultores.cl/api/acciones/', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
